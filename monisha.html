@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #38bdf8;
+            --secondary: #7c3aed;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --accent: #38bdf8;
+            --glass: rgba(255,255,255,0.08);
+            --card-bg: rgba(15,23,42,0.85);
+            --border-glow: 0 0 0 2px var(--accent), 0 0 10px var(--primary);
+            --border-gradient: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #05010a;
+            font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+            color: var(--light);
+        }
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-family: 'Consolas', monospace;
+            font-size: 2rem;
+            text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
+            z-index: 2;
+            pointer-events: none;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 2px 20px rgba(56,189,248,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .navbar.scrolled {
+            padding: 1rem 5%;
+            box-shadow: 0 5px 30px rgba(56,189,248,0.25);
+            border-bottom: 2px solid var(--secondary);
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 8px var(--primary);
+        }
+        .logo-icon {
+            color: var(--accent);
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 6px var(--primary));
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-link {
+            position: relative;
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            background: rgba(56,189,248,0.08);
+            box-shadow: 0 0 8px var(--primary);
+        }
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--light);
+        }
+        .hero {
+            min-height: 100vh;
+            padding: 10rem 5% 5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .hero-content {
+            max-width: 600px;
+            background: rgba(15,23,42,0.7);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 0 0 2px var(--accent), 0 0 30px var(--primary);
+            border: 2px solid transparent;
+            border-image: var(--border-gradient) 1;
+        }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: inline-block;
+            position: relative;
+            padding-left: 2.5rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+        .hero-subtitle::before {
+            content: '';
+            position: absolute;
+            width: 2rem;
+            height: 2px;
+            background: var(--accent);
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 8px var(--primary);
+        }
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 12px var(--primary);
+        }
+        .hero-description {
+            font-size: 1.1rem;
+            color: rgba(248,250,252,0.85);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+        .hero-contact {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .contact-item:hover {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+        .contact-icon {
+            font-size: 1.2rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 4px var(--primary));
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: 2px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 8px 25px var(--primary);
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--primary);
+        }
+        .about-container {
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: var(--border-glow);
+            border: 2px solid var(--accent);
+            padding: 2rem;
+        }
+        .about-content {
+            flex: 1;
+        }
+        .about-text {
+            margin-bottom: 2rem;
+            color: rgba(248,250,252,0.85);
+        }
+        .about-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(56,191,248,0.15);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--accent);
+            border: 1.5px solid var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+        }
+        .about-image {
+            flex: 0 0 242px;
+            height: 242px;
+            overflow: hidden;
+            border-radius: 50%;
+            position: relative;
+            margin-left: auto;
+            border: 4px solid var(--accent);
+            box-shadow: 0 0 30px var(--primary), 0 0 0 8px rgba(56,189,248,0.15);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        .image-wrapper {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--light);
+        }
+        .image-border {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            border: 3px dashed var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate 30s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg);}
+            100% { transform: translate(-50%, -50%) rotate(360deg);}
+        }
+        .section {
+            padding: 6rem 5%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--primary);
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 4px;
+            bottom: -10px;
+            left: 0;
+            background: var(--border-gradient);
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--primary);
+        }
+        /* Education */
+        .education-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .education-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 12px var(--primary);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .education-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px var(--primary);
+            border-color: var(--secondary);
+        }
+        .education-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 6px var(--primary));
+        }
+        .education-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+        .education-institution {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .education-details {
+            font-size: 0.9rem;
+            color: rgba(248,250,252,0.7);
+            margin-bottom: 1rem;
+        }
+        .education-year {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(56,189,248,0.1);
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--primary);
+        }
+        /* Projects */
+        .projects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px var(--primary);
+            transition: all 0.3s;
+        }
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px var(--secondary);
+            border-color: var(--secondary);
+        }
+        .project-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-bottom: 2px solid var(--accent);
+        }
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .project-card:hover .project-image img {
+            transform: scale(1.1);
+        }
+        .project-info {
+            padding: 1.5rem;
+        }
+        .project-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+        .project-description {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            color: rgba(248,250,252,0.8);
+            line-height: 1.6;
+        }
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tech-item {
+            padding: 0.3rem 0.8rem;
+            background: rgba(37,99,235,0.15);
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+        .project-link {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            background: transparent;
+        }
+        .project-link.live {
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+        .project-link.code {
+            border: 2px solid var(--light);
+            color: var(--light);
+        }
+        .project-link:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 5px 15px var(--primary);
+            background: var(--accent);
+            color: #fff;
+        }
+        /* Certifications */
+        .certifications-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .certification-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 12px var(--primary);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .certification-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px var(--secondary);
+            border-color: var(--secondary);
+        }
+        .certification-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 6px var(--primary));
+        }
+        .certification-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .certification-issuer {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .certification-year {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(56,189,248,0.1);
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--primary);
+        }
+        .certificate-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.92);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .certificate-modal.active {
+            display: flex;
+        }
+        .certificate-content img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 10px;
+            border: 4px solid var(--accent);
+            box-shadow: 0 0 30px var(--primary);
+        }
+        /* Contact */
+        .contact-container {
+            display: flex;
+            gap: 3rem;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: var(--border-glow);
+            border: 2px solid var(--accent);
+            padding: 2rem;
+        }
+        .contact-info {
+            flex: 1;
+        }
+        .contact-card {
+            background: var(--dark);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .contact-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 20px var(--secondary);
+            border-color: var(--secondary);
+        }
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 6px var(--primary));
+        }
+        .contact-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+        .contact-text {
+            font-size: 0.95rem;
+            color: rgba(248,250,252,0.8);
+        }
+        .contact-form {
+            flex: 1;
+            background: var(--dark);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: rgba(248,250,252,0.7);
+            transition: all 0.3s;
+            pointer-events: none;
+            background: var(--dark);
+            padding: 0 0.5rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--primary);
+            border-radius: 0.5rem;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--primary);
+        }
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            top: -0.6rem;
+            left: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            background: var(--dark);
+        }
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 0 10px var(--primary);
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 10px 20px var(--secondary);
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        /* Footer */
+        .footer {
+            padding: 2rem 5%;
+            text-align: center;
+            background: rgba(15,23,42,0.95);
+            border-top: 2px solid var(--accent);
+            box-shadow: 0 -2px 20px var(--primary);
+        }
+        .copyright {
+            font-size: 0.95rem;
+            color: rgba(248,250,252,0.7);
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .social-link {
+            color: var(--light);
+            font-size: 1.2rem;
+            transition: color 0.3s;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(56,189,248,0.08);
+            box-shadow: 0 0 8px var(--primary);
+        }
+        .social-link:hover {
+            color: #fff;
+            background: var(--accent);
+            border-color: var(--secondary);
+            box-shadow: 0 0 16px var(--secondary);
+        }
+        /* Responsive */
+        @media (max-width: 992px) {
+            .about-container, .contact-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .about-image {
+                margin: 0 auto;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: var(--dark);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2rem;
+                transition: all 0.5s;
+                z-index: 100;
+            }
+            .nav-links.active {
+                left: 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .hero {
+                flex-direction: column;
+                padding-top: 8rem;
+                text-align: center;
+                gap: 2rem;
+            }
+            .about-container, .contact-container {
+                padding: 1rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .projects-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-contact, .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .section {
+                padding: 3rem 2%;
+            }
+            .about-image {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="space"></canvas>
+    <div class="center-text"></div>
+    <script>
+        const canvas = document.getElementById('space');
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        function resize() {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w;
+            canvas.height = h;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        const stars = [];
+        const numStars = 300;
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 1.5 + 0.2,
+                speed: Math.random() * 0.3 + 0.05,
+                alpha: Math.random() * 0.5 + 0.5
+            });
+        }
+        function drawStars() {
+            ctx.clearRect(0, 0, w, h);
+            for (let star of stars) {
+                ctx.save();
+                ctx.globalAlpha = star.alpha;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#fff';
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.restore();
+                star.y += star.speed;
+                if (star.y > h) {
+                    star.x = Math.random() * w;
+                    star.y = 0;
+                }
+            }
+        }
+        function animate() {
+            drawStars();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <a href="#home" class="logo">
+            <i class="fas fa-code logo-icon"></i>
+            <span>MONISHA A</span>
+        </a>
+        <div class="nav-links">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#education" class="nav-link">Education</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#certifications" class="nav-link">Certifications</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Monisha A</h1>
+            <p class="hero-description">
+               A fresh graduate eager to begin a professional journey where I can apply my knowledge and grow through real-time experience. Known for being a good listener, quick learner, and taking work seriously. Aiming to contribute meaningfully in a challenging environment by exploring new technologies and improving continuously through dedicated effort.
+            </p>
+            <div class="hero-contact">
+                <a href="tel:+916369672003" class="contact-item">
+                    <i class="fas fa-phone contact-icon"></i>
+                    +91 6380923956
+                </a>
+                <a href="" class="contact-item">
+                    <i class="fas fa-envelope contact-icon"></i>
+                    monishaece43@gmail.com
+                </a>
+            </div>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">
+                    <i class="fas fa-project-diagram"></i> View Projects
+                </a>
+                <a href="#contact" class="btn btn-outline">
+                    <i class="fas fa-paper-plane"></i> Contact Me
+                </a>
+            </div>
+        </div>
+        <!-- Profile Image -->
+        <div class="about-image">
+            <div class="image-wrapper">
+                <img src="moni.jpg" alt="monisha v">
+            </div>
+            <div class="image-border"></div>
+        </div>
+    </section>
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-container">
+                <div class="about-content">
+                    <p class="about-text">
+                        I’m Monisha, a recent Electronics and Communication Engineering graduate from M. Kumarasamy College of Engineering, Karur. Although I come from an ECE background, my curiosity in software development and cloud computing inspired me to explore beyond my curriculum.
+
+
+                    </p>
+                    <p class="about-text">
+                        My career objective is an aspiring Software Developer with a strong interest in cloud and web development. 
+                        It highlights my educational background, technical skills, projects, achievements, and personal details.
+                    </p>
+                    <div class="about-skills">
+                        <span class="skill-tag">Java</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">HTML</span>
+                        <span class="skill-tag">CSS</span>
+                        <span class="skill-tag">Cloud Computing</span>
+                    </div>
+                    <div class="about-skills">
+                        <h1 style="font-size:1.1rem;color:var(--accent);margin-right:1rem;">Languages :</h1>
+                        <span class="skill-tag">English</span>
+                        <span class="skill-tag">Tamil</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Education Section -->
+    <section id="education" class="section">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+            <div class="education-container">
+                <div class="education-card">
+                    <i class="fas fa-graduation-cap education-icon"></i>
+                    <h3 class="education-title">BE-Electronics and Communication Engineering</h3>
+                    <p class="education-institution">M Kumarasamy College of Engineering</p>
+                    <p class="education-details">CGPA: 8.167</p>
+                    <span class="education-year">2021 - 2025</span>
+                </div>
+
+                <div class="education-card">
+                    <i class="fas fa-school education-icon"></i>
+                    <h3 class="education-title">Higher Secondary Certificate</h3>
+                    <p class="education-institution">Karur Sri Ramakrishna Vidhyalaya Hr.Sec School</p>
+                    <p class="education-details">Percentage: 90.6%</p>
+                    <span class="education-year">2020 - 2021</span>
+                </div>
+
+                <div class="education-card">
+                    <i class="fas fa-school education-icon"></i>
+                    <h3 class="education-title">Secondary Education</h3>
+                    <p class="education-institution">Government Higher Secondary School</p>
+                    <p class="education-details">Percentage: 82.4%</p>
+                    <span class="education-year">2018 - 2019</span>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-title">My Projects</h2>
+            <div class="projects-container">
+                <!-- Project 1: Real-Time Health Data Management System -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="project1.jpg" alt="Real-Time Health Data Management System">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Real-Time Health Data Management in WBAN for Remote Patient Monitoring</h3>
+                        <p class="project-description">
+                            Developed a health monitoring system using Wireless Body Area Networks and LSTM deep learning.<br>
+                            Enabled accurate health predictions and alerts via voice, SMS, and Telegram.<br>
+                            Presented at 4th international conference and published in IEEE.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-item">WBAN</span>
+                            <span class="tech-item">LSTM</span>
+                            <span class="tech-item">Python</span>
+                            <span class="tech-item">IoT</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link live">IEEE Paper</a>
+                            <a href="#" class="project-link code">More Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project 2: E-Waste Facility Locator -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="project2.png" alt="E-Waste Facility Locator">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">E-Waste Facility Locator</h3>
+                        <p class="project-description">
+                            Created a web-based tool for locating recycling centers and estimating e-waste value.<br>
+                            Integrated a reward system to encourage recycling.<br>
+                            Utilized Firebase for backend support and automated notifications.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-item">HTML</span>
+                            <span class="tech-item">CSS</span>
+                            <span class="tech-item">JavaScript</span>
+                            <span class="tech-item">Firebase</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link live">Live Demo</a>
+                            <a href="#" class="project-link code">More Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Certifications Section -->
+    <section id="certifications" class="section">
+        <div class="container">
+            <h2 class="section-title">Certifications</h2>
+            <div class="certifications-container">
+                <div class="certification-card" onclick="showCertificate('certificate1')">
+                    <i class="fas fa-certificate certification-icon"></i>
+                    <h3 class="certification-title">AWS Certified Developer-Associate ></h3>
+                    <p class="certification-issuer">Amazon</p>
+                    <span class="certification-year">2024</span>
+                </div>
+                <div class="certification-card" onclick="showCertificate('certificate2')">
+                    <i class="fas fa-certificate certification-icon"></i>
+                    <h3 class="certification-title">Google Cloud Certified Associate Cloud Engineer</h3>
+                    <p class="certification-issuer">Google</p>
+                    <span class="certification-year">2024</span>
+                </div>
+            </div>
+        </div>
+        <!-- Modals for Certificates -->
+        <div id="certificate1" class="certificate-modal" onclick="closeCertificate('certificate1')">
+            <div class="certificate-content">
+                <img src="aws.jpg" alt="AWS Certified Developer Certificate">
+            </div>
+        </div>
+        <div id="certificate2" class="certificate-modal" onclick="closeCertificate('certificate2')">
+            <div class="certificate-content">
+                <img src="google.jpg" alt="Google Cloud Certified Associate Cloud Engineer Certificate">
+            </div>
+        </div>
+    </section>
+    <script>
+        function showCertificate(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeCertificate(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">Contact Me</h2>
+            <div class="contact-container">
+                <div class="contact-info" style="background: none; border: none; box-shadow: none; padding: 0;">
+                    <div class="contact-card">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <h3 class="contact-title">Email</h3>
+                        <p class="contact-text">monishaece43@gmail.com</p>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fas fa-phone contact-icon"></i>
+                        <h3 class="contact-title">Phone</h3>
+                        <p class="contact-text">+91 6380923956</p>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                        <h3 class="contact-title">Location</h3>
+                        <p class="contact-text">Karur, Tamil Nadu, India</p>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm" onsubmit="sendemail(event)">
+                        <div class="form-group">
+                            <input type="text" class="form-input" id="name" placeholder=" " required>
+                            <label for="name" class="form-label">Your Name</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-input" id="email" placeholder=" " required>
+                            <label for="email" class="form-label">Your Email</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-input" id="subject" placeholder=" ">
+                            <label for="subject" class="form-label">Subject</label>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-input form-textarea" id="message" placeholder=" " required></textarea>
+                            <label for="message" class="form-label">Your Message</label>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function sendemail(event) {
+            event.preventDefault();
+            var email = document.getElementById("email").value;
+            var from_name = document.getElementById("name").value;
+            var message = document.getElementById("message").value;
+            var subject = document.getElementById("subject").value;
+            var templateParams = {
+                email: email,
+                name: from_name,
+                message: message,
+                subject: subject
+            };
+            emailjs.send('service_uesbju4', 'template_4jg0toj', templateParams)
+                .then(function(response) {
+                    alert('Message sent successfully!');
+                    document.getElementById("contactForm").reset();
+                }, function(error) {
+                    alert('Failed to send message. Please try again later.');
+                    console.error('Failed to send email:', error);
+                });
+        }
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("nPc6cQGhdmaoejvqY");
+        })();
+    </script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/monishaappavu" class="social-link" aria-label="LinkedIn Profile" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://github.com/monishaappavu" class="social-link" aria-label="GitHub Profile" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+            </a>
+            
+            <a href="" class="social-link" aria-label="Instagram Profile" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-telegram"></i>
+            </a>
+        </div>
+        <p class="copyright">Thanks for visiting my portfolio!</p>
+    </footer>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuToggle.innerHTML = navLinks.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
